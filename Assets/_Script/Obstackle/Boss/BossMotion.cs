@@ -20,10 +20,11 @@ public class BossMotion : MonoBehaviour
     [SerializeField] private float flt_CounterInterVal;
 
     [Header("Type 2 Boss")]
-    [SerializeField] private bool isType2Boss;
+    [SerializeField] private bool isType2Boss; 
     [SerializeField] private float flt_MinFireRate;
     [SerializeField] private float flt_MaxFireRate;
-   
+
+    //if Type 2 Boss Active So Boss Is Move As Player Other Wise Boss Is Static
 
     private void OnEnable() {
         GameManager.Instance.GamePlayingState += MyUpdate;
@@ -95,5 +96,10 @@ public class BossMotion : MonoBehaviour
             yield return new WaitForSeconds(flt_CounterInterVal);
         }
         isAttacking = false;
+    }
+
+
+    public void DetsroyBoss2() {
+        GameManager.Instance.CurrentSmallBossHandler.DestroyType2Boss(this);
     }
 }

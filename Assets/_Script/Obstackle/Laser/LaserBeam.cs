@@ -5,52 +5,63 @@ using UnityEngine;
 
 public class LaserBeam : MonoBehaviour
 {
+
+
     [Header("Laser Component")]
-    [SerializeField] private LineRenderer line;
+    [SerializeField] private int laserIndex;
+    [SerializeField] private GameObject laserIndiacter;
+    [SerializeField] private GameObject laser;
+    [SerializeField] private GameObject postion;
+    public Collider ShootingCollider;
+    public Collider LaserCollider;
+       
+
     [SerializeField] private Transform start_Postion;
     [SerializeField] private Transform end_Postion;
 
     [Header("LaserData")]
     [SerializeField] private LayerMask player;
-    private float flt_raycastDistance;
-    private Vector3 raycast_Direction;
+    
+    //public void ShowPosition(bool isActive) {
+    //    postion.gameObject.SetActive(isActive);
+       
+
+    //}
+    //public void ShowIndicater(bool isActive) {
+
+    //    laserIndiacter.gameObject.SetActive(isActive);
+    //}
+    //public void ShowLaser(bool isActive) {
+    //    laser.gameObject.SetActive(isActive);
+    //}
 
 
-    private void Start() {
+    public void StartLaserShootingProcess() {
 
-        SetLaserRayCastData();
-        GameManager.Instance.GamePlayingState += LaserUpdate;
+        StartCoroutine(LaserShootingProcess());
     }
 
-   
+    private IEnumerator LaserShootingProcess() {
 
-    private void OnDisable() {
-        GameManager.Instance.GamePlayingState -= LaserUpdate;
+        laserIndiacter.SetActive(true);
+        yield return new WaitForSeconds(5f);
+
+        laserIndiacter.SetActive(false);
+        laser.SetActive(true);
+
+        yield return new WaitForSeconds(3f);
+
+        laser.SetActive(false);
+
+        GameManager.Instance.currentLaserHandler.LaserShootingProcessCompleted();
     }
 
-    private void LaserUpdate() {
 
-        SetLaserLineRenderorPostion();
-        ActiveRaycast();
+    public void LaserDestroyedByBullet() {
+
+        StopAllCoroutines();
+        GameManager.Instance.currentLaserHandler.LaserDestroyedByPlayer(this);
+
     }
 
-    private void ActiveRaycast() {
-
-
-        if (Physics.Raycast(start_Postion.position,raycast_Direction,out RaycastHit hit,flt_raycastDistance,player)) {
-
-            GameManager.Instance.GameOver();
-        }
-    }
-
-    private void SetLaserLineRenderorPostion() {
-        line.SetPosition(0, start_Postion.position);
-        line.SetPosition(1, end_Postion.position);
-    }
-
-    private void SetLaserRayCastData() {
-        raycast_Direction = (end_Postion.position - start_Postion.position).normalized;
-        flt_raycastDistance = MathF.Abs(Vector3.Distance(end_Postion.position, start_Postion.position));
-        
-    }
 }

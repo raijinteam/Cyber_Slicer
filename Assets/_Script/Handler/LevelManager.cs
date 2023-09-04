@@ -17,6 +17,9 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private float incresedAmmount;
     [SerializeField] private float maxAmmount;
     [SerializeField] private float incresedLevelTime;
+
+    
+
     [SerializeField] private float flt_CurrentTime;
 
     [Header("ExtraLevelAddIn Game")]
@@ -43,20 +46,10 @@ public class LevelManager : MonoBehaviour
     
 
     [Header("----Lavehandler Data ----")]
-
-    [Header("Type 1 Level")]
-    [Space]
     [SerializeField] private PathHandler pathHandler;
-    [SerializeField] private RocketHandler rockethandler;
-    [SerializeField] private EnemyShipHandler enemyShipHandler;
-    [SerializeField] private AstroidHandler astroidHandler;
-
-    [Header("type 2 Level")]
-    [Space]
    
-    [SerializeField] private LaserHandler laserhandler;
-    [SerializeField] private BossHandler bossHandler;
-    [SerializeField] private BossType2Handler boss2;
+
+  
 
     public delegate void LevelStatus(float ammount);
     public LevelStatus LevelUpdate;
@@ -120,14 +113,13 @@ public class LevelManager : MonoBehaviour
 
     private void Update() {
         if (Input.GetKeyDown(KeyCode.Q)) {
-            rockethandler.setRocket();
+            GameManager.Instance.InstatiateRocketEnemy();
         }
         else if (Input.GetKeyDown(KeyCode.W)) {
-            astroidHandler.SetAstroidData();
-            StartCoroutine(LevelCompletedTime());
+            GameManager.Instance.InstatiateAstroidEnemy();
         }
         else if (Input.GetKeyDown(KeyCode.E)) {
-            enemyShipHandler.SetEnemy();
+            GameManager.Instance.InstatiateEnemyShip();
         }
         else if (Input.GetKeyDown(KeyCode.R)) {
             SetKeyBoss(0); //Laser
@@ -147,14 +139,13 @@ public class LevelManager : MonoBehaviour
         
         switch (Index) {
             case 0:
-                rockethandler.setRocket();
+                GameManager.Instance.InstatiateRocketEnemy();
                 break;
             case 1:
-                astroidHandler.SetAstroidData();
-                StartCoroutine(LevelCompletedTime());
+                GameManager.Instance.InstatiateAstroidEnemy();
                 break;
             case 2:
-                enemyShipHandler.SetEnemy();
+                GameManager.Instance.InstatiateEnemyShip();
                 break;
 
         }
@@ -247,14 +238,14 @@ public class LevelManager : MonoBehaviour
         int Index = Random.Range(0, 100);
 
         if (Index < 35) {
-            laserhandler.SetLaserLeval();
+            GameManager.Instance.InstantiateLaserBoss();
         }
         else if (Index < 70) {
-            bossHandler.SetBoss();
+            GameManager.Instance.InstatiateBigBoss();
         }
         else {
 
-            boss2.SetEnemy();
+            GameManager.Instance.InstatiateSmallBoss();
         }
 
 
@@ -271,20 +262,24 @@ public class LevelManager : MonoBehaviour
     
     private void SetKeyBoss(int V) {
         if (V == 0) {
-            laserhandler.SetLaserLeval();
+
+            GameManager.Instance.InstantiateLaserBoss();
         }
         else if (V == 1) {
-            bossHandler.SetBoss();
+            GameManager.Instance.InstatiateBigBoss();
         }
         else {
 
-            boss2.SetEnemy();
+            GameManager.Instance.InstatiateSmallBoss();
         }
     }
 
     public bool IsSpawnObstackle {
         get { return isSpawnObaskle; }
     }
-    
-   
+
+    public void RemoveLaser(LaserBeam Laser) {
+       // laserhandler.RemoveThisLaser(Laser);
+    }
+
 }

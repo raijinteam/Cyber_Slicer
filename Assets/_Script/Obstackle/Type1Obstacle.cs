@@ -5,7 +5,7 @@ using UnityEngine;
 public class Type1Obstacle : Obstackle
 {
     [Header("Component")]
-    [SerializeField] private Collider My_Collider;
+    [SerializeField] private BoxCollider2D My_Collider;
     [SerializeField] private Transform SpawnPostion;
     [SerializeField] private LineRenderer line;
     [SerializeField] private SpriteRenderer start_Sprite;
@@ -15,10 +15,10 @@ public class Type1Obstacle : Obstackle
     [SerializeField] private bool isRotate;
     [SerializeField] private float flt_MinDistance;
     [SerializeField] private float flt_MaxDistance;
-    [SerializeField] private float flt_RoatationSpeed = 20;
+    private float flt_RoatationSpeed = 20;
     private float flt_Multipler = 2;
-    private float flt_MinRotationSpeed = 40;
-    private float flt_MaxRotationSpeed = 50;
+    private float flt_MinRotationSpeed = 75;
+    private float flt_MaxRotationSpeed = 100;
     
 
 
@@ -48,7 +48,7 @@ public class Type1Obstacle : Obstackle
 
         line.SetPosition(0, start_Sprite.transform.position);
         line.SetPosition(1, end_Sprite.transform.position);
-        My_Collider.transform.localScale = new Vector3(My_Collider.transform.localScale.x, 
+        My_Collider.size = new Vector3(My_Collider.transform.localScale.x, 
                                         flt_Distance * flt_Multipler, My_Collider.transform.localScale.z);
       
     }

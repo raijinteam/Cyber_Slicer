@@ -129,7 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7820061590627882369}
   - component: {fileID: 3253428181689760871}
-  - component: {fileID: 9079702256627971}
+  - component: {fileID: 5070352405773011118}
   m_Layer: 0
   m_Name: Path 4
   m_TagString: Untagged
@@ -172,19 +172,32 @@ MonoBehaviour:
   - {fileID: 6605417935277116627}
   - {fileID: 567614108842061798}
   all_Coin: []
---- !u!65 &9079702256627971
-BoxCollider:
+--- !u!61 &5070352405773011118
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7820061590627882430}
+  m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -9.5}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 10.2, y: 1, z: 1}
-  m_Center: {x: 0, y: -11, z: 0}
+  m_Size: {x: 9.1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1001 &134022495906259947
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -198,7 +211,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 449434971524860941, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: flt_MaxDistance
-      value: 2.2
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 449434971524860941, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: flt_MinDistance
@@ -303,7 +316,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 449434971524860941, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: flt_MaxDistance
-      value: 1
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 449434971524860941, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: flt_MinDistance
@@ -327,7 +340,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4244852261085798600, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 4244852261085798600, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: m_LocalPosition.y
@@ -408,7 +421,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 449434971524860941, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: flt_MaxDistance
-      value: 2.2
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 449434971524860941, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: flt_MinDistance
@@ -513,7 +526,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 449434971524860941, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: flt_MaxDistance
-      value: 1
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 449434971524860941, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: flt_MinDistance
@@ -537,7 +550,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4244852261085798600, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 4244852261085798600, guid: f62301f5d9f9e8b49bdbd3cc484d1398, type: 3}
       propertyPath: m_LocalPosition.y

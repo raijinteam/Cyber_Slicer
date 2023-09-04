@@ -12,19 +12,55 @@ public class GameManager : MonoBehaviour {
     public int Coin;
 
     [Header("Player Data")]
-    [SerializeField] private GameObject player;
-    public GameObject MyPlayer { get { return player; } }
- 
+    [SerializeField] private PlayerCantroller player;
+    public PlayerCantroller MyPlayer { get { return player; } }
+    private bool isRewive;
 
-    [Header("UiScreen")]
-    public GameObject HomeScreen;
-    public GameObject gameOverScreen;
-    public GameObject victoryScreen;
-    public GameObject GamePlay;
 
-   
+    [Header("Powerup data")]
+    [SerializeField] private bool is2XPowerUpActive;
+
+    public bool isRewiveScreenShown;
+    [SerializeField] private bool isShieldActivate;
+    [SerializeField] private bool isSpeedBoostActive;
+    public bool IsShieldActive { get { return isShieldActivate; } set { isShieldActivate = value; } }
+    public bool IsSpeedBoostActive { get { return isSpeedBoostActive; } set { isSpeedBoostActive = value; } }
+    public bool Is2XActive { get { return is2XPowerUpActive; } set { is2XPowerUpActive = value; } }
+
+    public bool IsplayerLive { get; internal set; }
+
+    [Header("Laser Boss")]
+    [SerializeField] private LaserHandler laserHandler;
+    public LaserHandler currentLaserHandler;
+
+    [Header("Big Boss")]
+    [SerializeField] private BossHandler bossHandler;
+    public BossHandler CurrentBossHandler;
+
+    [Header("Small Multiple Boss")]
+    [SerializeField] private BossType2Handler bossType2Handler;
+    public BossType2Handler CurrentSmallBossHandler;
+
+
+    [Header("Rocket")]
+    [SerializeField] private RocketHandler rocketHandler;
+    public RocketHandler rocketEnemyHandler;
+
+    [Header("Rocket Handler")]
+    [SerializeField] private AstroidHandler astroidHandler;
+    public AstroidHandler currentAstroidHandler;
+
+    [Header("EnemyShip")]
+    [SerializeField] private EnemyShipHandler enemyshipHandler;
+    public EnemyShipHandler currentEnemyShipHandler;
+
+
     public delegate void GameRunning();
     public GameRunning GamePlayingState;
+    public delegate void RewiveTime();
+    public RewiveTime RewiveCalculation;
+    public delegate void GamespeedChange(float GameSpeed);
+    public GamespeedChange ChangeGameSpeed;
 
 
 
@@ -37,13 +73,14 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+
     private void Start() {
         currentState = new HomeScreenState();
         currentState.EnterState();
     }
 
     private void Update() {
-        currentState.UpdateState();
+       currentState.UpdateState();
     }
 
     public void SetState(GameState newState) {
@@ -55,46 +92,113 @@ public class GameManager : MonoBehaviour {
     }
 
 
-    public class HomeScreenState : GameState {
 
-        public override void EnterState() {
-            Debug.Log("Enable Home Screen");
-            GameManager.Instance.HomeScreen.gameObject.SetActive(true);
-        }
-
-        public override void ExitState() {
-
-            Debug.Log("DisableHomescreen");
-            GameManager.Instance.HomeScreen.gameObject.SetActive(false);
-        }
-    }
 
     public void CollectedCoin(int coinvalue) {
+        if (is2XPowerUpActive) {
+            coinvalue = coinvalue * 2;
+            
+        }
+        Debug.Log(coinvalue + "CollectedCoin");
         Coin += coinvalue;
+    }
+
+    public void InstantiateLaserBoss() {
+
+        currentLaserHandler = Instantiate(laserHandler, transform.position, transform.rotation);
+        currentLaserHandler.SetLaserLeval();
+    }
+
+    public void InstatiateBigBoss() {
+        CurrentBossHandler = Instantiate(bossHandler, transform.position, transform.rotation);
+        CurrentBossHandler.SetBigBossLevel();
+    }
+
+    public void InstatiateSmallBoss() {
+        CurrentSmallBossHandler = Instantiate(bossType2Handler, transform.position, transform.rotation);
+        CurrentSmallBossHandler.SetType2Boss();
+    }
+
+    public void InstatiateRocketEnemy() {
+        rocketEnemyHandler = Instantiate(rocketHandler, transform.position, transform.rotation);
+        rocketEnemyHandler.setRocket();
+    }
+    public void InstatiateAstroidEnemy() {
+        currentAstroidHandler = Instantiate(astroidHandler, transform.position, transform.rotation);
+        currentAstroidHandler.SetAstroidData();
+    }
+    
+    public void InstatiateEnemyShip() {
+        currentEnemyShipHandler = Instantiate(enemyshipHandler, transform.position, transform.rotation);
+        currentEnemyShipHandler.SetEnemy();
     }
 
 
     // Called when the player loses the game
     public void GameOver() {
-        SetState(new GameStateGameOver());
+        if (isShieldActivate) {
+            return;
+        }
+        else if (isSpeedBoostActive) {
+            return;
+        }
+        else if (isRewiveScreenShown) {
+            return;
+        }
+        else {
+            if (!isRewiveScreenShown) {
+                isRewiveScreenShown = true;
+                IsplayerLive = false;
+                SetState(new GameStateRewive());
+            }
+            else {
+                IsplayerLive = false;
+                SetState(new GameStateGameOver());
+            }
+        }
+
+        
+
     }
 
-    // Called when the player wins the game
-    public void Victory() {
-        SetState(new GameStateVictory());
-    }
-
-    // Called to restart the game
+  
+   
     public void RestartGame() {
-        Debug.Log("LoaD sCENE");
+        Debug.Log("Load  Scene");
         SceneManager.LoadScene(0);
     }
-    public void StartPlayGame() {
 
+
+   
+    public void StartGame() {
+
+        IsplayerLive = true;
         Debug.Log("PlayGameStatStart");
+        UiManager.instance.GamePlay.gameObject.SetActive(true);
         SetState(new GameStatePlaying());
     }
+
+    public void PlayerGetRewive() {
+
+       UiManager.instance.RewiveScreen.gameObject.SetActive(false);
+        SetState(new GameStatePlaying());
+        StartCoroutine(DeisablePlayer());
+    }
+
+    private IEnumerator DeisablePlayer() {
+        isRewive = true;
+        yield return new WaitForSeconds(1);
+        isRewive = false;
+    }
+
+   
 }
+
+
+
+
+
+
 
 // Base state class
 public abstract class GameState : MonoBehaviour {
@@ -103,19 +207,32 @@ public abstract class GameState : MonoBehaviour {
     public virtual void ExitState() { }
 }
 
+
+public class HomeScreenState : GameState {
+
+    public override void EnterState() {
+        Debug.Log("Enable Home Screen");
+        UiManager.instance.HomeScreen.gameObject.SetActive(true);
+    }
+
+    public override void ExitState() {
+
+        Debug.Log("DisableHomescreen");
+        UiManager.instance.HomeScreen.gameObject.SetActive(false);
+    }
+}
+
 // State when the game is being played
 
 public class GameStatePlaying : GameState {
 
     public override void EnterState() {
         Time.timeScale = 1f;
-        GameManager.Instance.gameOverScreen.SetActive(false);
-        GameManager.Instance.victoryScreen.SetActive(false);
+       
     }
 
     public override void UpdateState() {
 
-        
         GameManager.Instance.GamePlayingState?.Invoke();
 
 
@@ -123,7 +240,7 @@ public class GameStatePlaying : GameState {
     public override void ExitState() {
 
         Debug.Log("DisableGamePLay");
-        GameManager.Instance.GamePlay.gameObject.SetActive(false);
+        UiManager.instance.GamePlay.gameObject.SetActive(false);
     }
 }
 
@@ -131,7 +248,7 @@ public class GameStatePlaying : GameState {
 public class GameStateGameOver : GameState {
     public override void EnterState() {
         Time.timeScale = 0f;
-        GameManager.Instance.gameOverScreen.SetActive(true);
+        UiManager.instance.gameOverScreen.SetActive(true);
     }
 
     public override void UpdateState() {
@@ -140,20 +257,22 @@ public class GameStateGameOver : GameState {
     
 }
 
-// State when the player wins the game
-public class GameStateVictory : GameState {
+
+
+public class GameStateRewive : GameState {
+
     public override void EnterState() {
-        Time.timeScale = 0f;
-        GameManager.Instance.victoryScreen.SetActive(true);
+        
+        UiManager.instance.RewiveScreen.SetActive(true);
     }
 
     public override void UpdateState() {
-        // Handle victory UI interactions here
+
+        GameManager.Instance.RewiveCalculation?.Invoke();
     }
     public override void ExitState() {
 
-        Debug.Log("DisableHomescreen");
-        GameManager.Instance.GamePlay.gameObject.SetActive(false);
+        UiManager.instance.GamePlay.gameObject.SetActive(false);
     }
 }
 

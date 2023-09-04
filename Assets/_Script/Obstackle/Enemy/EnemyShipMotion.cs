@@ -25,12 +25,14 @@ public class EnemyShipMotion : MonoBehaviour {
         GameManager.Instance.GamePlayingState -= MyUpdate;
     }
 
-    private void OnTriggerEnter(Collider other) {
+   
 
-        if (other.TryGetComponent<LeftBoundry>(out LeftBoundry left)) {
+    private void OnTriggerEnter2D(Collider2D collision) {
+
+        if (collision.CompareTag(TagName.left_Boundry)) {
             direction = -direction;
         }
-        else if (other.TryGetComponent<RightBoundry>(out RightBoundry rigth)) {
+        else if (collision.CompareTag(TagName.rigth_Boundry)) {
             direction = -direction;
         }
     }

@@ -7,7 +7,7 @@ public abstract class Pickup : MonoBehaviour {
 
     [Header("Vfx")]
     [SerializeField] private ParticleSystem ps_Destroyed;
-    [SerializeField] private Collider my_Collider;
+    [SerializeField] private Collider2D my_Collider;
     [SerializeField] private GameObject body;
 
 
@@ -25,6 +25,7 @@ public abstract class Pickup : MonoBehaviour {
     private IEnumerator WaitForDestroyed() {
 
         yield return new WaitForSeconds(0.5f);
+       
         Destroy(gameObject);
     }
 }

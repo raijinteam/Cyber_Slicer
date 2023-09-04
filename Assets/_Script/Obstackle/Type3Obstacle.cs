@@ -110,7 +110,7 @@ public class Type3Obstacle : Obstackle {
         end_Sprite.transform.position = StartPostion;
         float flt_CurrentTime = 0;
         while (flt_CurrentTime <1) {
-            Debug.Log(targetPostion + "TargetPostion");
+          
              StartPostion = new Vector3(start_Sprite.transform.position.x, end_Sprite.transform.position.y, end_Sprite.transform.position.z);
             targetPostion = new Vector3(targetPostion.x, start_Sprite.transform.position.y, targetPostion.z);
             end_Sprite.transform.position = Vector3.Lerp(StartPostion, targetPostion, flt_CurrentTime);
@@ -134,12 +134,14 @@ public class Type3Obstacle : Obstackle {
 
     private void ActiveRayCastDetactPlayer() {
 
-        RaycastHit hit;
+       
 
         raycastDirection = (end_Sprite.transform.position - start_Sprite.transform.position).normalized;
         raycastDistnce = Mathf.Abs(Vector3.Distance(end_Sprite.transform.position, start_Sprite.transform.position));
 
-        if (Physics.Raycast(start_Sprite.transform.position, raycastDirection, out hit, raycastDistnce, MyLayer)) {
+       RaycastHit2D hit =  Physics2D.Raycast(start_Sprite.transform.position, raycastDirection, raycastDistnce, MyLayer);
+
+        if (hit.collider != null) {
 
             Debug.Log("hit" + hit.transform.name);
             GameManager.Instance.GameOver();

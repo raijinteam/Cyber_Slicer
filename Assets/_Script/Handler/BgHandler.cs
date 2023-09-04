@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,45 +6,80 @@ using UnityEngine;
 public class BgHandler : MonoBehaviour {
 
     [Header("Bg Component")]
-    [SerializeField] private GameObject[] all_BG1;
-    [SerializeField] private GameObject[] all_Bg2;
-    [SerializeField] private GameObject[] all_Bg3;
-    [SerializeField] private GameObject[] all_Bg4;
+    [SerializeField] private PathHandler path;
+    [SerializeField]private List<SetBG> list_BG = new List<SetBG>();
+  
 
-   
+
 
     [Header("BG Data")]
-    [SerializeField] private int Bg1Iddex;
-    [SerializeField] private int Bg2Index;
-    [SerializeField] private int BG3Index;
-    [SerializeField] private int Bg4Index;
-    [SerializeField]private float flt_PathMotionSpeed;
-    private float flt_distanceBeteenTwoPath = 23.44f;
-    private List<GameObject> list_BG = new List<GameObject>();
-
+    [SerializeField] private bool isActiveStartBG;
+    [SerializeField] private float flt_PathMotionSpeed;
+    [SerializeField]private float flt_distanceBeteenTwoPath = 26.72f;
+   
     public delegate void BGDisable(GameObject bg);
     public BGDisable DiableBG;
 
 
     private void Start() {
-
+        isActiveStartBG = true;
+        flt_PathMotionSpeed = path.flt_PathMotionSpeed;
+        GameManager.Instance.MyPlayer.transform.SetParent(list_BG[0].transform);
         LevelManager.instance.LevelUpdate += IncreaserdMyLevel;
-        DiableBG += DestroyedBG;
-        SpawnStartBg();
+       
+       
     }
-    private void LateUpdate() {
-        for (int i = 0; i < list_BG.Count; i++) {
-
-            list_BG[i].transform.Translate(Vector3.left * flt_PathMotionSpeed * Time.deltaTime);
-        }
-    }
-
 
     private void OnDisable() {
 
-        DiableBG -= DestroyedBG;
         LevelManager.instance.LevelUpdate -= IncreaserdMyLevel;
     }
+    private void LateUpdate() {
+        if (!GameManager.Instance.IsplayerLive) {
+            return;
+        }
+        if (isActiveStartBG) {
+            if (list_BG[0].transform.position.y < -7) {
+                GameManager.Instance.MyPlayer.transform.SetParent(null);
+            }
+        }
+        for (int i = 0; i < list_BG.Count; i++) {
+
+            list_BG[i].transform.Translate(Vector3.down * flt_PathMotionSpeed * Time.deltaTime);
+            if (list_BG[i].transform.position.y < -26.72f) {
+                int BackIndex = i - 1;
+                if (BackIndex < 0) {
+                    BackIndex = list_BG.Count - 1;  
+                }
+                Debug.Log("BackINdex" + BackIndex);
+                list_BG[i].transform.position = new Vector3(list_BG[i].transform.position.x,
+                                list_BG[BackIndex].transform.position.y + flt_distanceBeteenTwoPath,
+                                list_BG[i].transform.position.z);
+               
+                if (!isActiveStartBG) {
+                    list_BG[i].SetBg();
+                    StartCoroutine(Delay_SeBG(i, BackIndex));
+                }
+                else {
+                    Destroy(list_BG[i]);
+                    list_BG.RemoveAt(i);
+                    isActiveStartBG = false;
+                   
+                }
+               
+                
+            }
+        }
+    }
+
+    private IEnumerator Delay_SeBG(int i, int backIndex) {
+        yield return new WaitForSeconds(0.1f);
+        list_BG[i].transform.position = new Vector3(list_BG[i].transform.position.x,
+                               list_BG[backIndex].transform.position.y + flt_distanceBeteenTwoPath,
+                               list_BG[i].transform.position.z);
+    }
+
+   
 
 
     #region EventHandler
@@ -54,102 +90,11 @@ public class BgHandler : MonoBehaviour {
     #endregion
 
 
-    #region Destroy Handler
-    private void DestroyedBG(GameObject bg) {
-
-        list_BG.Remove(bg);
-        bg.gameObject.SetActive(false);
-        Vector3 postion = GetGretestPostion();
-        postion += new Vector3(0, flt_distanceBeteenTwoPath, 0);
-        SpawnRandomBG(postion);
-
-    }
-
-    private Vector3 GetGretestPostion() {
-        float maxPostion = list_BG[2].transform.position.y;
-
-        return new Vector3(0, maxPostion, 0);
-    }
-
-    #endregion
+  
 
 
-    #region Bg_Spawn Handler
+   
 
-    private void SpawnStartBg() {
+   
 
-        Vector3 postion = Vector3.zero;
-        for (int i = 0; i < 4; i++) {
-
-            SpawnRandomBG(postion);
-            postion += new Vector3(0, flt_distanceBeteenTwoPath, 0);
-
-        }
-    }
-    private void SpawnRandomBG(Vector3 spawnPostion) {
-        int index = Random.Range(0, 4);
-        switch (index) {
-
-            case 0:
-                EnableBG1(spawnPostion);
-                break;
-            case 1:
-                EnableBG2(spawnPostion);
-                break;
-            case 2:
-                EnableBG3(spawnPostion);
-                break;
-            case 3:
-                EnableBG4(spawnPostion);
-                break;
-
-        }
-    }
-
-    private void EnableBG4(Vector3 spawnPostion) {
-        all_Bg4[Bg4Index].gameObject.SetActive(true);
-        all_Bg4[Bg4Index].transform.position = spawnPostion;
-        list_BG.Add(all_Bg4[Bg4Index]);
-        Bg4Index++;
-        if (Bg4Index > all_Bg4.Length - 1) {
-            Bg4Index = 0;
-        }
-
-    }
-
-    private void EnableBG3(Vector3 spawnPostion) {
-
-        all_Bg3[BG3Index].gameObject.SetActive(true);
-        all_Bg3[BG3Index].transform.position = spawnPostion;
-        list_BG.Add(all_Bg3[BG3Index]);
-        BG3Index++;
-        if (BG3Index > all_Bg3.Length - 1) {
-            BG3Index = 0;
-        }
-
-
-    }
-
-    private void EnableBG2(Vector3 spawnPostion) {
-
-        all_Bg2[Bg2Index].gameObject.SetActive(true);
-        all_Bg2[Bg2Index].transform.position = spawnPostion;
-        list_BG.Add(all_Bg2[Bg2Index]);
-        Bg2Index++;
-        if (Bg2Index > all_Bg2.Length - 1) {
-            Bg2Index = 0;
-        }
-    }
-
-    private void EnableBG1(Vector3 spawnPostion) {
-
-        all_BG1[Bg1Iddex].gameObject.SetActive(true);
-        all_BG1[Bg1Iddex].transform.position = spawnPostion;
-        list_BG.Add(all_BG1[Bg1Iddex]);
-        Bg1Iddex++;
-        if (Bg1Iddex > all_BG1.Length - 1) {
-            Bg1Iddex = 0;
-        }
-    }
-    #endregion
 }

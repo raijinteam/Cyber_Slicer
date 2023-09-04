@@ -13,10 +13,31 @@ public class Type2Obstacle : Obstackle {
     public float moveDuration = 2f;
     private float flt_MinDuration = 1;
     private float flt_MaxDuration = 2;
-
     private float screenWidth;
+    private float flt_MinRotationSpeed = 15;
+    private float flt_MaxRotationSpeed = 100;
+    private float flt_CurrentRotationalSpeed;
 
+    private void OnEnable() {
+        GameManager.Instance.GamePlayingState += MyUpdate;
+        if (myState == Type2ObstackleState.notMove) {
+            transform.localEulerAngles = new Vector3(0, 0, Random.Range(0, 360));
+        }
+        flt_CurrentRotationalSpeed = Random.Range(flt_MinRotationSpeed, flt_MaxRotationSpeed);
+    }
+    private void OnDisable() {
+        GameManager.Instance.GamePlayingState -= MyUpdate;
+    }
 
+    private void MyUpdate() {
+
+        if (myState != Type2ObstackleState.notMove) {
+            transform.Rotate(Vector3.forward * flt_CurrentRotationalSpeed * Time.deltaTime);
+        }
+       
+    }
+
+    
     public override void SetObstackleData() {
 
         moveDuration = Random.Range(flt_MinDuration, flt_MaxDuration);
@@ -74,6 +95,7 @@ public class Type2Obstacle : Obstackle {
     private void SetLeftToCenterMoveObstackle() {
 
         transform.DOLocalMoveX(leftPostion, moveDuration).SetLoops(-1, LoopType.Yoyo).SetEase(Ease.Linear);
+        
     }
 
  

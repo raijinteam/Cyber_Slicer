@@ -6,7 +6,7 @@ using UnityEngine;
 public class RocketHandler : MonoBehaviour
 {
     [Header("Component")]
-    [SerializeField] private GameObject rocket;
+    [SerializeField] private Collider2D rocket;
     [SerializeField] private GameObject Spawner_Rocket;
 
 
@@ -19,15 +19,15 @@ public class RocketHandler : MonoBehaviour
 
     private float flt_RocketYPostion = 20f;
 
-    private void Start() {
-
+    private void OnEnable() {
         GameManager.Instance.GamePlayingState += MyUpdate;
         LevelManager.instance.BossActivationStatus += SetBossActivation;
     }
 
-  
+
     private void OnDisable() {
         GameManager.Instance.GamePlayingState -= MyUpdate;
+        LevelManager.instance.BossActivationStatus -= SetBossActivation;
     }
 
     public void setRocket() {
@@ -79,18 +79,25 @@ public class RocketHandler : MonoBehaviour
 
         yield return new WaitForSeconds(1);
         Spawner_Rocket.gameObject.SetActive(false);
-        float flt_CurerentTime = 0;
         rocket.gameObject.SetActive(true);
+        rocket.enabled = false;
+        float flt_CurerentTime = 0;
+        
         rocket.transform.position = new Vector3(Spawner_Rocket.transform.position.x, 20, 0);
         
         Vector3 rocketStartPosition = rocket.transform.position;
         Vector3 rocketTargetEndPostion = new Vector3(Spawner_Rocket.transform.position.x, -flt_RocketYPostion, 0);
 
+        bool isCollider = false;
         while (flt_CurerentTime < 1) {
 
             flt_CurerentTime += Time.deltaTime / flt_TimeToRocketGoesToEndPostion;
 
             rocket.transform.position = Vector3.Lerp(rocketStartPosition, rocketTargetEndPostion, flt_CurerentTime);
+            if (rocket.transform.position.y < 6 && !isCollider) {
+                rocket.enabled = true;
+                isCollider = true;
+            }
             yield return null;
         }
 

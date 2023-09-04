@@ -8,7 +8,7 @@ public class BossBulletMotion : MonoBehaviour
     [Header("Bullet Component")]
     [SerializeField] private GameObject body;
     [SerializeField] private ParticleSystem ps_Explotion;
-    [SerializeField] private Collider myCollider;
+    [SerializeField] private Collider2D myCollider;
 
     [Header("BulletData")]
     [SerializeField] private bool isMove;

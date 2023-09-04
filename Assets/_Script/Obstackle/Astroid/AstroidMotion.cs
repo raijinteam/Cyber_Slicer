@@ -5,18 +5,20 @@ using UnityEngine;
 
 public class AstroidMotion : MonoBehaviour {
 
-
+    [Header("Component")]
+    [SerializeField] private Transform child_Dircetion;
    
+
 
     [Header("Astroid  Data")]
     [SerializeField] private float angleMinRange;
     [SerializeField] private float angleMaxRange;
     [SerializeField] private float flt_AstroidSpeed;
     [SerializeField] private bool isAstroidInScreen;
-    [SerializeField] private Transform child_Dircetion;
+   
 
 
-    private void Start() {
+    private void OnEnable() {
 
         Destroy(gameObject, 10);
         GameManager.Instance.GamePlayingState += MyUpdate;
@@ -49,35 +51,18 @@ public class AstroidMotion : MonoBehaviour {
         transform.Translate(child_Dircetion.right * flt_AstroidSpeed * Time.deltaTime);
     }
 
-    private void OnTriggerEnter(Collider other) {
+    private void OnTriggerEnter2D(Collider2D collision) {
 
         Debug.Log("EnterCollision");
         if (!isAstroidInScreen) {
+          
             return;
         }
 
-        ChangeDircetion(other);
-
-
+        ChangeDircetion(collision);
 
     }
-
-    private void ChangeDircetion(Collider other) {
-
-      
-
-        if (other.TryGetComponent<LeftBoundry>(out LeftBoundry left)) {
-
-            child_Dircetion.right = Vector3.Reflect(child_Dircetion.right, Vector3.right);
-        }
-        else if (other.TryGetComponent<RightBoundry>(out RightBoundry rigth)) {
-
-            child_Dircetion.right = Vector3.Reflect(child_Dircetion.right, Vector3.left);
-        }
-       
-    }
-
-    private void OnTriggerExit(Collider other) {
+    private void OnTriggerExit2D(Collider2D collision) {
 
         Debug.Log("ExitCollision");
         if (!isAstroidInScreen) {
@@ -85,6 +70,26 @@ public class AstroidMotion : MonoBehaviour {
             isAstroidInScreen = true;
         }
     }
+
+    public void DestroyedAstroid() {
+        Destroy(gameObject);
+       Destroy(GameManager.Instance.currentAstroidHandler.gameObject);
+    }
+
+    private void ChangeDircetion(Collider2D other) {
+
+        if (other.CompareTag(TagName.left_Boundry)) {
+            child_Dircetion.right = Vector3.Reflect(child_Dircetion.right, Vector3.right);
+        }
+        else if (other.CompareTag(TagName.rigth_Boundry)) {
+            child_Dircetion.right = Vector3.Reflect(child_Dircetion.right, Vector3.left);
+        }
+
+    }
+
+   
+
+   
 
    
 

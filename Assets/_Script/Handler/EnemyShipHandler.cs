@@ -10,6 +10,7 @@ public class EnemyShipHandler : MonoBehaviour {
     [SerializeField] private Transform spawnPostion;
     [SerializeField] private Transform endPostion;
     [SerializeField] private Transform wokingPostion;
+    [SerializeField] private Collider2D MyCollider;
 
     [Header("Enemy data")]
     [SerializeField] private float flt_TimeToBossGoesToWorkingPostion;
@@ -50,13 +51,16 @@ public class EnemyShipHandler : MonoBehaviour {
             yield return null;
         }
 
+        MyCollider.enabled = true;
         obj_Enemy.transform.position = wokingPostion.position;
         obj_Enemy.setBulletSpawnActive(true);
 
         yield return new WaitForSeconds(flt_MaxTimeToActiveBoss);
-         wokingPostion.position = obj_Enemy.transform.position;
-        endPostion.transform.position = new Vector3(wokingPostion.position.x, endPostion.transform.position.y, endPostion.transform.position.z);
         obj_Enemy.setBulletSpawnActive(false);
+        yield return new WaitForSeconds(0.5f);
+        wokingPostion.position = obj_Enemy.transform.position;
+        endPostion.transform.position = new Vector3(wokingPostion.position.x, endPostion.transform.position.y, endPostion.transform.position.z);
+       
 
         StartCoroutine(EnemyGoesToEndpostion());
     }

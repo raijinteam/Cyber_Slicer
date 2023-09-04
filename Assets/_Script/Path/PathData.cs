@@ -16,7 +16,7 @@ public class PathData : MonoBehaviour
             SpawnObstackle();
         }
        
-      // SpawnCoin(NoOFCoin);
+        SpawnCoin();
     }
 
     public void DisableMyObstackle() {
@@ -28,20 +28,11 @@ public class PathData : MonoBehaviour
         SpawnObstackle();
     }
 
-    private void SpawnCoin(int noOFCoin) {
-        List<Coin> list_CurrentCoin = new List<Coin>();
+    private void SpawnCoin() {
 
         for (int i = 0; i < all_Coin.Length; i++) {
 
-            list_CurrentCoin.Add(all_Coin[i]);
-        }
-        for (int i = 0; i < noOFCoin; i++) {
-
-            int Index = Random.Range(0, list_CurrentCoin.Count);
-
-            list_CurrentCoin[Index].gameObject.SetActive(true);
-            list_CurrentCoin.RemoveAt(Index);
-
+            all_Coin[i].gameObject.SetActive(true);
         }
     }
 

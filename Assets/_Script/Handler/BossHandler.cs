@@ -18,7 +18,7 @@ public class BossHandler : MonoBehaviour {
    
 
 
-    public void SetBoss() {
+    public void SetBigBossLevel() {
 
         obj_Boss.gameObject.SetActive(true);
         obj_Boss.transform.position = spawnPostion.position;
@@ -41,6 +41,8 @@ public class BossHandler : MonoBehaviour {
         obj_Boss.setBulletSpawnActive(true);
         yield return new WaitForSeconds(flt_MaxTimeToActiveBoss);
         obj_Boss.setBulletSpawnActive(false);
+        wokingPostion.transform.position = obj_Boss.transform.position;
+        endPostion.transform.position = new Vector3(wokingPostion.position.x, endPostion.transform.position.y, endPostion.position.z);
         float flt_DisableTime = 0;
         while (flt_DisableTime < 1) {
 
@@ -50,6 +52,11 @@ public class BossHandler : MonoBehaviour {
         }
 
         obj_Boss.gameObject.SetActive(false);
+        Destroy(gameObject);
         LevelManager.instance.CompleteBoss();
     }
+
+    
+
+    
 }

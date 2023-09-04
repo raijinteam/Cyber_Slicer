@@ -10,7 +10,10 @@ public class PathHandler : GameStatePlaying
    
     [SerializeField] private float flt_distanceBeteenTwoPath;
     [SerializeField] private List<PathData> list_CurrentPath;
-    [SerializeField] private float flt_PathMotionSpeed;
+    public float flt_PathMotionSpeed;
+
+    [SerializeField] private float flt_gameSpeed;
+
 
 
     [Header("Component")]
@@ -22,6 +25,7 @@ public class PathHandler : GameStatePlaying
 
 
 
+    
 
 
 
@@ -32,9 +36,12 @@ public class PathHandler : GameStatePlaying
         pathDestroyed += DestroyedPath;
         LevelManager.instance.LevelUpdate += UpdateMyLevel;
         LevelManager.instance.BossActivationStatus += SetBossTimeStatus;
+        GameManager.Instance.ChangeGameSpeed += SpeedUpdate;
     }
 
-   
+    private void SpeedUpdate(float GameSpeed) {
+        flt_gameSpeed = GameSpeed;
+    }
 
     private void OnDisable() {
 
@@ -81,7 +88,7 @@ public class PathHandler : GameStatePlaying
     private void PathMotion() {
         for (int i = 0; i < list_CurrentPath.Count; i++) {
 
-            list_CurrentPath[i].transform.Translate(Vector3.down * flt_PathMotionSpeed * Time.deltaTime);
+            list_CurrentPath[i].transform.Translate(Vector3.down * flt_PathMotionSpeed *flt_gameSpeed* Time.deltaTime);
            
         }
     }
@@ -98,7 +105,7 @@ public class PathHandler : GameStatePlaying
             list_CurrentPath.Add(currentPath);
             postion += new Vector3(0, flt_distanceBeteenTwoPath, 0);
 
-            if (i == 0) {
+            if (i < 3) {
                 continue;
             }
             else {
